@@ -10,7 +10,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Demmy Mobile Shop"),
+        title: new Text("Foreign Snacks"),
+        centerTitle: true,
         actions: <Widget>[
           new IconButton(icon: new Icon(Icons.favorite, color: Colors.white,), onPressed: null),
           new Stack(
@@ -26,6 +27,98 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
+      body: new Center(
+        child: new Text("My Homepage Store", style: new TextStyle(fontSize: 20.0),),
+      ),
+      floatingActionButton: Stack(
+        alignment: Alignment.topLeft,
+        children: <Widget>[
+          new FloatingActionButton(onPressed: null,
+              child: new Icon(Icons.shopping_cart)),
+          new CircleAvatar(
+            radius: 9.5,
+            backgroundColor: Colors.red,
+            child: new Text("0", style: new TextStyle(color: Colors.white, fontSize: 13.0),),
+          )
+        ],
+      ),
+      drawer: new Drawer(
+        child: new Column(
+          children: <Widget>[
+            new UserAccountsDrawerHeader(
+                accountName: new Text("David Mcharo"),
+                accountEmail: new Text("davidamcharo@gmail.com"),
+              currentAccountPicture: new CircleAvatar(
+                backgroundColor: Colors.white,
+                child: new Icon(Icons.person),
+              ),
+            ),
+            new ListTile(
+              leading: new CircleAvatar(
+                child: new Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+              ),
+              title: new Text("Order Notifications"),
+            ),
+            new ListTile(
+              leading: new CircleAvatar(
+                child: new Icon(
+                  Icons.history,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+              ),
+              title: new Text("Order History"),
+            ),
+            new Divider(),
+            new ListTile(
+              leading: new CircleAvatar(
+                child: new Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+              ),
+              title: new Text("Profile Settings"),
+            ),
+            new ListTile(
+              leading: new CircleAvatar(
+                child: new Icon(
+                  Icons.home,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+              ),
+              title: new Text("Delivery Address"),
+            ),
+            new Divider(),
+            new ListTile(
+              trailing: new CircleAvatar(
+                child: new Icon(
+                  Icons.help,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+              ),
+              title: new Text("About Us"),
+            ),
+            new ListTile(
+              trailing: new CircleAvatar(
+                child: new Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+              ),
+              title: new Text("Login"),
+            ),
+          ],
+        ),
+      ),
+
 
     );
   }
