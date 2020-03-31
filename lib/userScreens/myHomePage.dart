@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'favorites.dart';
+import 'messages.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -6,18 +9,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  BuildContext context;
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     return Scaffold(
       appBar: new AppBar(
         title: new Text("Foreign Snacks"),
         centerTitle: true,
         actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.favorite, color: Colors.white,), onPressed: null),
+          new IconButton(
+              icon: new Icon(Icons.favorite, color: Colors.white,),
+              onPressed: (){
+                Navigator.of(context)
+                    .push(new CupertinoPageRoute(builder: (BuildContext context) {
+                      return new UserFavorites();
+                }));
+              }),
           new Stack(
             alignment: Alignment.topLeft,
             children: <Widget>[
-              new IconButton(icon: new Icon(Icons.chat, color: Colors.white,), onPressed: null),
+              new IconButton(icon: new Icon(Icons.chat, color: Colors.white,),
+                  onPressed: (){
+                    Navigator.of(context).
+                    push(new CupertinoPageRoute(builder: (BuildContext context) => new UserMessages()));
+                  }),
               new CircleAvatar(
                 radius: 9.5,
                 backgroundColor: Colors.red,
