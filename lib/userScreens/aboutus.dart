@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 
-class UserMessages extends StatefulWidget {
+class AboutUs extends StatefulWidget {
   @override
-  _UserMessagesState createState() => _UserMessagesState();
+  _AboutUsState createState() => _AboutUsState();
 }
 
-class _UserMessagesState extends State<UserMessages> {
+class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Messages"),
+        title: new Text("About Us"),
         centerTitle: false,
       ),
       body: new Center(
-        child: new Text("My Messages",
+        child: new Text("About Us",
           style: new TextStyle(fontSize: 25.0),),
       ),
     );
+
   }
 }

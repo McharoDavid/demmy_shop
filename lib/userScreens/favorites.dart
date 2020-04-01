@@ -11,8 +11,8 @@ class _UserFavoritesState extends State<UserFavorites> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("My favorite Snacks"),
-        centerTitle: true,
+        title: new Text("Favorite Snacks"),
+        centerTitle: false,
       ),
       body: new Center(
         child: new Text("My favorite Snacks",
