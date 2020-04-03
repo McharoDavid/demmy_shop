@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "942155013939",
+    "firebase_url": "https://foreignsnacks-dcc45.firebaseio.com",
+    "project_id": "foreignsnacks-dcc45",
+    "storage_bucket": "foreignsnacks-dcc45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942155013939:android:84c1fa2c826016ad526846",
+        "android_client_info": {
+          "package_name": "com.example.demmyshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942155013939-521inpipken2r7eh4fmpf1bk7l3vhv45.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.demmyshop",
+            "certificate_hash": "0e55ce33955943e75d0ef7e78cc3b62d3188eef6"
+          }
+        },
+        {
+          "client_id": "942155013939-6bq592ish50hiju2lff887vq4fm0g8lk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHA_BUspymOb8dwPKcpoHo_6UFdzLbZuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942155013939-6bq592ish50hiju2lff887vq4fm0g8lk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

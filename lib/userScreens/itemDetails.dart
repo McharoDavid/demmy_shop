@@ -200,56 +200,56 @@ class _ItemDetailsState extends State<ItemDetails> {
                           new SizedBox(
                             height: 10.0,
                           ),
-                          new Text(
-                            "Colors",
-                            style: new TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w700),
-                          ),
+//                          new Text(
+//                            "Colors",
+//                            style: new TextStyle(
+//                                fontSize: 18.0, fontWeight: FontWeight.w700),
+//                          ),
                           new SizedBox(
-                            height: 10.0,
+                            height: 100.0,
                           ),
-                          new SizedBox(
-                            height: 50.0,
-                            child: new ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 4,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: new ChoiceChip(
-                                        label: new Text("Color ${index}"),
-                                        selected: false),
-                                  );
-                                }),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new Text(
-                            "Sizes",
-                            style: new TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w700),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new SizedBox(
-                            height: 50.0,
-                            child: new ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 4,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: new ChoiceChip(
-                                        label: new Text("Size ${index}"),
-                                        selected: false),
-                                  );
-                                }),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
+//                          new SizedBox(
+//                            height: 50.0,
+//                            child: new ListView.builder(
+//                                scrollDirection: Axis.horizontal,
+//                                itemCount: 4,
+//                                itemBuilder: (context, index) {
+//                                  return Padding(
+//                                    padding: const EdgeInsets.all(4.0),
+//                                    child: new ChoiceChip(
+//                                        label: new Text("Color ${index}"),
+//                                        selected: false),
+//                                  );
+//                                }),
+//                          ),
+//                          new SizedBox(
+//                            height: 10.0,
+//                          ),
+//                          new Text(
+//                            "Sizes",
+//                            style: new TextStyle(
+//                                fontSize: 18.0, fontWeight: FontWeight.w700),
+//                          ),
+//                          new SizedBox(
+//                            height: 10.0,
+//                          ),
+//                          new SizedBox(
+//                            height: 50.0,
+//                            child: new ListView.builder(
+//                                scrollDirection: Axis.horizontal,
+//                                itemCount: 4,
+//                                itemBuilder: (context, index) {
+//                                  return Padding(
+//                                    padding: const EdgeInsets.all(4.0),
+//                                    child: new ChoiceChip(
+//                                        label: new Text("Size ${index}"),
+//                                        selected: false),
+//                                  );
+//                                }),
+//                          ),
+//                          new SizedBox(
+//                            height: 10.0,
+//                          ),
                           new Text(
                             "Amount",
                             style: new TextStyle(
