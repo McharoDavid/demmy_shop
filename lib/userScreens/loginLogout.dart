@@ -55,7 +55,8 @@ class _LoginState extends State<Login> {
               },
               child: new Text(
                 "Not registered? Sign Up here",
-                style: new TextStyle(color: Colors.white ),
+                style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline ),
+
               ),
             )
           ],
