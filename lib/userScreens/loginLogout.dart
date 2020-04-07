@@ -1,4 +1,5 @@
 import 'package:demmyshop/tools/app_tools.dart';
+import 'package:demmyshop/userScreens/userSignup.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -51,7 +52,8 @@ class _LoginState extends State<Login> {
             ),
             new GestureDetector(
               onTap: (){
-
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (context)=> new UserSignUp()));
               },
               child: new Text(
                 "Not registered? Sign Up here",

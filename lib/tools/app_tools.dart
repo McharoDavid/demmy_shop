@@ -7,11 +7,13 @@ Widget appTextField(
       String textHint,
       bool isPassword,
       double sidePadding,
+      TextInputType textType,
       TextEditingController controller
     }
     ){
   sidePadding == null ? sidePadding = 0.0 : sidePadding;
   textHint == null ? textHint = "" : textHint;
+  textType == null ? textType = TextInputType.text : textType;
 
   return Padding(
     padding: new EdgeInsets.only(left: sidePadding, right: sidePadding),
@@ -22,7 +24,7 @@ Widget appTextField(
       ),
       child: new TextField(
         controller: controller,
-        obscureText: isPassword == null ? false : isPassword,
+        obscureText: isPassword == null ? false : isPassword, keyboardType: textType,
         decoration: new InputDecoration(
           border: InputBorder.none,
           hintText: textHint,
