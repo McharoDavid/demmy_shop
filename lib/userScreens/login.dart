@@ -1,4 +1,7 @@
+import 'package:demmyshop/tools/app_data.dart';
+import 'package:demmyshop/tools/app_methods.dart';
 import 'package:demmyshop/tools/app_tools.dart';
+import 'package:demmyshop/tools/firebase_methods.dart';
 import 'package:demmyshop/userScreens/userSignup.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +15,7 @@ class _LoginState extends State<Login> {
   TextEditingController password = new TextEditingController();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   BuildContext context;
+  AppMethods appMethods = new FirebaseMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +71,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  verifyLogin(){
+  verifyLogin() async{
     if(email.text == ""){
       showSnackBar("Email cannot be empty", scaffoldKey);
       return;
@@ -79,5 +83,15 @@ class _LoginState extends State<Login> {
     }
     
     displayProgressDialog(context);
+    String response = await appMethods.LoginUser(email: email.text.toLowerCase(), password: password.text.toLowerCase());
+
+    if(response == successful){
+      closeProgressDialog(context);
+      Navigator.of(context).pop();
+      
+    }else{
+      closeProgressDialog(context);
+      showSnackBar(response, scaffoldKey);
+    }
   }
 }

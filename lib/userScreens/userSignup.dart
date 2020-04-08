@@ -1,5 +1,8 @@
+import 'package:demmyshop/tools/app_data.dart';
+import 'package:demmyshop/tools/app_methods.dart';
 import 'package:demmyshop/tools/app_tools.dart';
-import 'package:demmyshop/userScreens/loginLogout.dart';
+import 'package:demmyshop/tools/firebase_methods.dart';
+import 'package:demmyshop/userScreens/login.dart';
 import 'package:flutter/material.dart';
 
 class UserSignUp extends StatefulWidget {
@@ -15,6 +18,7 @@ class _UserSignUpState extends State<UserSignUp> {
   TextEditingController verifyPassword = new TextEditingController();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   BuildContext context;
+  AppMethods appMethods = new FirebaseMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +103,7 @@ class _UserSignUpState extends State<UserSignUp> {
     );
   }
 
-  verifyDetails(){
+  verifyDetails() async{
     if(fullName.text == ""){
       showSnackBar("Full Name cannot be empty", scaffoldKey);
       return;
@@ -129,7 +133,23 @@ class _UserSignUpState extends State<UserSignUp> {
       return;
     }
 
-
     displayProgressDialog(context);
+
+    String response = await appMethods.createUserAccount(
+        fullName: fullName.text,
+        phone: phoneNumber.text,
+        email: email.text.toLowerCase(),
+        password: password.text.toLowerCase()
+    );
+
+    if(response == successful){
+      closeProgressDialog(context);
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+
+    }else{
+      closeProgressDialog(context);
+      showSnackBar(response, scaffoldKey);
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:demmyshop/tools/progressdialog.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Widget appTextField(
     {
@@ -94,4 +95,11 @@ displayProgressDialog(BuildContext context){
 
 closeProgressDialog(BuildContext context){
   Navigator.of(context).pop();
+}
+
+writeDataLocally({String key, String value}) async{
+  Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
+  final SharedPreferences localData = await saveLocal;
+  localData.setString(key, value);
+  
 }
