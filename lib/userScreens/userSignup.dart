@@ -145,7 +145,7 @@ class _UserSignUpState extends State<UserSignUp> {
     if(response == successful){
       closeProgressDialog(context);
       Navigator.of(context).pop();
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
 
     }else{
       closeProgressDialog(context);

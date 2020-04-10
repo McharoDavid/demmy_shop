@@ -1,7 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demmyshop/tools/app_data.dart';
+import 'package:demmyshop/tools/app_methods.dart';
+import 'package:demmyshop/tools/app_tools.dart';
+import 'package:demmyshop/tools/firebase_methods.dart';
 import 'package:demmyshop/tools/store.dart';
 import 'package:demmyshop/userScreens/itemDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'favorites.dart';
 import 'messages.dart';
 import 'cart.dart';
@@ -19,6 +25,39 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   BuildContext context;
+  String accountName = "";
+  String accountEmail = "";
+  String accountPhotoUrl = "";
+  bool isLoggedIn;
+  AppMethods appMethods = new FirebaseMethods();
+
+  //Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  Future getCurrentUser() async{
+//    clearDataLocally();
+    accountName = await getStringDataLocally(key: accountFullName);
+    accountEmail = await getStringDataLocally(key: userEmail);
+    accountPhotoUrl = await getStringDataLocally(key: photoUrl);
+    isLoggedIn = await getBoolDataLocally(key: loggedIn);
+
+    accountName == null ? accountName = "Guest User" : accountName;
+    accountEmail == null ? accountEmail = "No Email" : accountEmail;
+
+    //print(accountName);
+
+    //print(accountEmail);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     this.context = context;
@@ -179,8 +218,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: new Column(
           children: <Widget>[
             new UserAccountsDrawerHeader(
-                accountName: new Text("David Mcharo"),
-                accountEmail: new Text("davidamcharo@gmail.com"),
+                accountName: new Text(accountName),
+                accountEmail: new Text(accountEmail),
               currentAccountPicture: new CircleAvatar(
                 backgroundColor: Colors.white,
                 child: new Icon(Icons.person),
@@ -266,11 +305,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   size: 20.0,
                 ),
               ),
-              title: new Text("Login"),
-              onTap: (){
-                Navigator.of(context).
-                push(new CupertinoPageRoute(builder: (BuildContext context) => new Login()));
-              },
+              title: new Text(isLoggedIn == true ? "Logout" : "Login"),
+              onTap: checkIfLoggedIn,
             ),
           ],
         ),
@@ -278,5 +314,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     );
+  }
+
+  checkIfLoggedIn() async{
+    if(isLoggedIn == false){
+      bool response = await Navigator.of(context).
+      push(new CupertinoPageRoute(builder: (BuildContext context) => new Login()));
+      if(response == true) getCurrentUser();
+      return;
+    }
+    bool response = await appMethods.LogoutUser();
+    if(response == true) getCurrentUser();
   }
 }

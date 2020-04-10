@@ -18,9 +18,26 @@ class FirebaseMethods implements AppMethods{
     FirebaseUser user;
 
     try{
-      await auth.signInWithEmailAndPassword(
-          email: email,
-          password: password);
+//      user = await auth.signInWithEmailAndPassword(
+//          email: email,
+//          password: password);
+
+      user = (await FirebaseAuth.instance.
+      signInWithEmailAndPassword(email: email, password: password))
+          .user;
+
+      if(user != null){
+        DocumentSnapshot userInfo = await getUserInfo(user.uid);
+        await writeDataLocally(key: userID, value: userInfo[userID]);
+        await writeDataLocally(
+            key: accountFullName, value: userInfo[accountFullName]);
+        await writeDataLocally(key: userEmail, value: userInfo[userEmail]);
+        await writeDataLocally(key: phoneNumber, value: userInfo[phoneNumber]);
+        await writeDataLocally(key: photoUrl, value: userInfo[photoUrl]);
+        await writeBoolDataLocally(key: loggedIn, value: true);
+
+        print(userInfo[userEmail]);
+      }
     }on PlatformException catch (e){
       //print(e.details);
       return errorMSG(e.message);
@@ -48,14 +65,14 @@ class FirebaseMethods implements AppMethods{
       if (user1 != null){
         await firestore.collection(usersData).document(user1.uid).setData({
           userID : user1.uid,
-          fullName : fullName,
+          accountFullName : fullName,
           phoneNumber : phone,
           userEmail : email,
           userPassword : password
         });
 
         writeDataLocally(key: userID, value: user1.uid);
-        writeDataLocally(key: fullName, value: fullName);
+        writeDataLocally(key: accountFullName, value: fullName);
         writeDataLocally(key: phoneNumber, value: phone);
         writeDataLocally(key: userEmail, value: email);
         writeDataLocally(key: userPassword, value: password);
@@ -84,6 +101,20 @@ class FirebaseMethods implements AppMethods{
 
   Future<String> errorMSG(String e) async {
     return e;
+  }
+
+  @override
+  Future<bool> LogoutUser() async{
+    // TODO: implement LogoutUser
+    await auth.signOut();
+    await clearDataLocally();
+    return complete();
+  }
+
+  @override
+  Future<DocumentSnapshot> getUserInfo(String userID) async{
+    // TODO: implement getUserInfo
+    return await firestore.collection(usersData).document(userID).get();
   }
 
 }

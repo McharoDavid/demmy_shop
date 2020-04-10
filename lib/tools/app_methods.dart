@@ -1,4 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 abstract class AppMethods{
   Future<String> LoginUser({String email, String password});
   Future<String> createUserAccount(
@@ -8,4 +10,6 @@ abstract class AppMethods{
         String password
       });
 
+  Future<bool> LogoutUser();
+  Future<DocumentSnapshot> getUserInfo(String userID);
 }

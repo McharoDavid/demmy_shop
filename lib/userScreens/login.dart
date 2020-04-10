@@ -87,7 +87,7 @@ class _LoginState extends State<Login> {
 
     if(response == successful){
       closeProgressDialog(context);
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
       
     }else{
       closeProgressDialog(context);
