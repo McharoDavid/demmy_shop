@@ -1,22 +1,25 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demmyshop/adminScreens/admin_home.dart';
 import 'package:demmyshop/tools/app_data.dart';
 import 'package:demmyshop/tools/app_methods.dart';
 import 'package:demmyshop/tools/app_tools.dart';
 import 'package:demmyshop/tools/firebase_methods.dart';
 import 'package:demmyshop/tools/store.dart';
-import 'package:demmyshop/userScreens/itemDetails.dart';
-import 'package:flutter/material.dart';
+import 'package:demmyshop/userScreens/profileSettings.dart';
+import 'package:demmyshop/userScreens/useraddress.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'favorites.dart';
-import 'messages.dart';
-import 'cart.dart';
-import 'notifications.dart';
-import 'history.dart';
-import 'profileSettings.dart';
-import 'useraddress.dart';
+import 'package:flutter/material.dart';
+
 import 'aboutus.dart';
+import 'cart.dart';
+import 'favorites.dart';
+import 'history.dart';
+import 'itemDetails.dart';
 import 'login.dart';
+import 'messages.dart';
+import 'notifications.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -30,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String accountPhotoUrl = "";
   bool isLoggedIn;
   AppMethods appMethods = new FirebaseMethods();
+  Firestore firestore = Firestore.instance;
 
   //Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
 
@@ -63,7 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
     this.context = context;
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Foreign Snacks"),
+        title: GestureDetector(
+          onLongPress: openAdmin,
+          child: new Text("Foreign Snacks"),
+        ),
         centerTitle: true,
         actions: <Widget>[
           new IconButton(
@@ -91,114 +98,32 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: new Center(
-        child: new Column(
-          children: <Widget>[
-            new Flexible(
-                child: new GridView.builder(gridDelegate:
-                new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                  itemCount: storeItems.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return new GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).
-                        push(new MaterialPageRoute(
-                            builder: (context)=> new ItemDetails(
-                              itemName: storeItems[index].itemName,
-                              itemPrice: storeItems[index].itemPrice,
-                              itemImage: storeItems[index].itemImage,
-                              itemRating: storeItems[index].itemRating,
-                            )
-                        ));
-                      },
-                      child: Card(
-                        child: Stack(
-                          alignment: FractionalOffset.topLeft,
-                          children: <Widget>[
-                            new Stack(
-                              alignment: FractionalOffset.bottomCenter,
-                              children: <Widget>[
-                                new Container(
-                                  decoration: new BoxDecoration(
-                                    image: new DecorationImage(
-                                      //fit: BoxFit.fitWidth,
-                                        image: new NetworkImage(storeItems[index].itemImage)
-                                    ),
-                                  ),
+      body: new StreamBuilder(
+          stream: firestore.collection(appProducts).snapshots(),
+          builder: (context,  snapshot){
+        if(!snapshot.hasData){
+          //return buildShimmer();
+          return new Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)));
 
-                                ),
-                                new Container(
-                                  height: 33.0,
-                                  color: Colors.black.withAlpha(90),
-                                  child: new Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        new Text("${storeItems[index].itemName.substring(0,4)}...",
-                                          style: new TextStyle(
-                                              fontWeight:
-                                              FontWeight.w700,
-                                              fontSize: 16.0,
-                                              color: Colors.white),),
-                                        new Text("\$${storeItems[index].itemPrice}",
-                                          style: new TextStyle(
-                                              color: Colors.white70,
-                                              fontWeight: FontWeight.w700),),
-
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                new Container(
-                                  height: 30.0,
-                                  width: 50.0,
-                                  decoration: new BoxDecoration(
-                                      color: Colors.black12,
-                                      borderRadius: new BorderRadius.only(
-                                          topRight: new Radius.circular(5.0),
-                                          bottomRight: new Radius.circular(5.0)
-                                      )
-                                  ),
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      new Icon(
-                                        Icons.star,
-                                        color: Colors.blueGrey,
-                                        size: 20.0,
-                                      ),
-                                      new Text(
-                                        "${storeItems[index].itemRating}",
-                                        style: new TextStyle(color: Colors.blueGrey),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                new IconButton(
-                                    icon: Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.lightBlueAccent,
-                                    ),
-                                    onPressed: (){}
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                    )
-            )
-          ],
-        ),
-      ),
+        }else{
+          final int dataCount = snapshot.data.documents.length;
+          print("data count $dataCount");
+          if(dataCount == 0){
+            return noDataFound();
+          }else{
+            return new GridView.builder(gridDelegate:
+            new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.85),
+              itemCount: dataCount,
+              itemBuilder: (context, index){
+                final DocumentSnapshot document = snapshot.data.documents[index];
+                return buildProducts(context, index, document);
+              },
+            );
+          }
+        }
+      }),
       floatingActionButton: Stack(
         alignment: Alignment.topLeft,
         children: <Widget>[
@@ -325,5 +250,143 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     bool response = await appMethods.LogoutUser();
     if(response == true) getCurrentUser();
+  }
+
+  openAdmin() {
+    Navigator.of(context).
+    push(new MaterialPageRoute(builder: (BuildContext context) => new AdminHome()));
+  }
+
+  Widget noDataFound(){
+    return new Container(
+      child: new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            new Icon(
+              Icons.find_in_page,
+              color: Colors.black45,
+              size: 80.0,
+            ),
+            new Text(
+              "No Product Available Yet",
+              style: new TextStyle(
+                color: Colors.black45,
+                fontSize: 20.0,
+              ),
+            ),
+            new SizedBox(
+              height: 20.0,
+            ),
+            new Text(
+              "Please Check Back Later",
+              style: new TextStyle(
+                color: Colors.red,
+                fontSize: 14.0,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildProducts(BuildContext context, int index, DocumentSnapshot document) {
+    List productImage = document[productImages] as List;
+
+    return new GestureDetector(
+      onTap: (){
+        Navigator.of(context).
+        push(new MaterialPageRoute(
+            builder: (context)=> new ItemDetails(
+              itemName: document[productTitle],
+              itemPrice: document[productPrice],
+              itemImages: productImage,
+              itemImage: productImage[0],
+              itemDescription: document[productDesc],
+              itemCategory: document[productCategory],
+              itemRating: storeItems[index].itemRating,
+            )
+        ));
+      },
+      child: Card(
+        child: Stack(
+          alignment: FractionalOffset.topLeft,
+          children: <Widget>[
+            new Stack(
+              alignment: FractionalOffset.bottomCenter,
+              children: <Widget>[
+                new Container(
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      //fit: BoxFit.fitWidth,
+                        image: new NetworkImage(productImage[0])
+                    ),
+                  ),
+
+                ),
+                new Container(
+                  width: 150.0,
+                  height: 50.0,
+                  color: Colors.black.withAlpha(90),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Text("${document[productTitle]}",
+                        style: new TextStyle(
+                            fontWeight:
+                            FontWeight.w700,
+                            fontSize: 16.0,
+                            color: Colors.white),),
+                      new Text("\$${document[productPrice]}",
+                        style: new TextStyle(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w700),),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                new Container(
+                  height: 30.0,
+                  width: 50.0,
+                  decoration: new BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: new BorderRadius.only(
+                          topRight: new Radius.circular(5.0),
+                          bottomRight: new Radius.circular(5.0)
+                      )
+                  ),
+                  child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      new Icon(
+                        Icons.star,
+                        color: Colors.blueGrey,
+                        size: 20.0,
+                      ),
+                      new Text(
+                        "${storeItems[index].itemRating}",
+                        style: new TextStyle(color: Colors.blueGrey),
+                      )
+                    ],
+                  ),
+                ),
+                new IconButton(
+                    icon: Icon(
+                      Icons.favorite_border,
+                      color: Colors.lightBlueAccent,
+                    ),
+                    onPressed: (){}
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

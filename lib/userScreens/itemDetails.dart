@@ -5,15 +5,21 @@ import 'cart.dart';
 
 class ItemDetails extends StatefulWidget {
   String itemName;
-  double itemPrice;
+  String itemPrice;
   String itemImage;
   double itemRating;
+  String itemDescription;
+  String itemCategory;
+  List itemImages;
 
   ItemDetails({
     this.itemName,
     this.itemPrice,
     this.itemImage,
-    this.itemRating
+    this.itemRating,
+    this.itemCategory,
+    this.itemDescription,
+    this.itemImages
   });
   @override
   _ItemDetailsState createState() => _ItemDetailsState();
@@ -56,158 +62,157 @@ class _ItemDetailsState extends State<ItemDetails> {
             ),
           ),
           new SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: new Column(
-                children: <Widget>[
-                  new SizedBox(
-                    height: 50.0,
-                  ),
-                  new Card(
-                    child: new Container(
-                      width: screenSize.width,
-                      margin:  new EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new SizedBox(
-                            height: 10.0,
+
+            child: new Column(
+              children: <Widget>[
+                new SizedBox(
+                  height: 50.0,
+                ),
+                new Card(
+                  child: new Container(
+                    width: screenSize.width,
+                    margin:  new EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                        new Text(
+                          widget.itemName,
+                          style: new TextStyle(
+                            fontSize: 18.0,fontWeight: FontWeight.w700
                           ),
-                          new Text(
-                            widget.itemName,
-                            style: new TextStyle(
-                              fontSize: 18.0,fontWeight: FontWeight.w700
-                            ),
+                        ),
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                        new Text(
+                          widget.itemCategory,
+                          style: new TextStyle(
+                              fontSize: 14.0,fontWeight: FontWeight.w400
                           ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new Text(
-                            "Snack Sub Name",
-                            style: new TextStyle(
-                                fontSize: 14.0,fontWeight: FontWeight.w400
-                            ),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              new Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  new Icon(
-                                    Icons.star,
-                                    color: Colors.blueGrey,
-                                    size: 20.0,
-                                  ),
-                                  new SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  new Text(
-                                    "${widget.itemRating}",
-                                    style: new TextStyle(color: Colors.black),
-                                  )
-                                ],
-                              ),
-                              new Text(
-                                "\$${widget.itemPrice}",
-                                style: new TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.red.withAlpha(250),
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  new Card(
-                    child: new Container(
-                      width: screenSize.width,
-                      height: 150.0,
-                      child: new ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index){
-                          return new Stack(
-                            alignment: Alignment.center,
-                            children: <Widget>[
-                              new Container(
-                                margin:
-                                new EdgeInsets.only(left: 5.0, right: 5.0),
-                                height: 140.0,
-                                width: 100.0,
-                                child: new Image.network(widget.itemImage),
-                              ),
-                              new Container(
-                                margin:
-                                new EdgeInsets.only(left: 5.0, right: 5.0),
-                                height: 140.0,
-                                width: 100.0,
-                                decoration: new BoxDecoration(
-                                  color: Colors.grey.withAlpha(50)
+                        ),
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                        new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            new Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                new Icon(
+                                  Icons.star,
+                                  color: Colors.blueGrey,
+                                  size: 20.0,
                                 ),
-                              )
-                            ],
-                          );
-                        },
-                      ),
+                                new SizedBox(
+                                  width: 5.0,
+                                ),
+                                new Text(
+                                  "${widget.itemRating}",
+                                  style: new TextStyle(color: Colors.black),
+                                )
+                              ],
+                            ),
+                            new Text(
+                              "\$${widget.itemPrice}",
+                              style: new TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.red.withAlpha(250),
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                      ],
                     ),
                   ),
-                  new Card(
-                    child: new Container(
-                      width: screenSize.width,
-                      margin: new EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new Text(
-                            "Description",
-                            style: new TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w700),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new Text(
-                            "My item full information",
-                            style: new TextStyle(
-                                fontSize: 14.0, fontWeight: FontWeight.w400),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                        ],
-                      ),
+                ),
+                new Card(
+                  child: new Container(
+                    width: screenSize.width,
+                    height: 150.0,
+                    child: new ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.itemImages.length,
+                      itemBuilder: (context, index){
+                        return new Stack(
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            new Container(
+                              margin:
+                              new EdgeInsets.only(left: 5.0, right: 5.0),
+                              height: 140.0,
+                              width: 100.0,
+                              child: new Image.network(widget.itemImages[index]),
+                            ),
+                            new Container(
+                              margin:
+                              new EdgeInsets.only(left: 5.0, right: 5.0),
+                              height: 140.0,
+                              width: 100.0,
+                              decoration: new BoxDecoration(
+                                color: Colors.grey.withAlpha(50)
+                              ),
+                            )
+                          ],
+                        );
+                      },
                     ),
                   ),
-                  new Card(
-                    child: new Container(
-                      width: screenSize.width,
-                      margin: new EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new SizedBox(
-                            height: 10.0,
-                          ),
+                ),
+                new Card(
+                  child: new Container(
+                    width: screenSize.width,
+                    margin: new EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                        new Text(
+                          "Description",
+                          style: new TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w700),
+                        ),
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                        new Text(
+                          widget.itemDescription,
+                          style: new TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.w400),
+                        ),
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                new Card(
+                  child: new Container(
+                    width: screenSize.width,
+                    margin: new EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new SizedBox(
+                          height: 10.0,
+                        ),
 //                          new Text(
 //                            "Colors",
 //                            style: new TextStyle(
 //                                fontSize: 18.0, fontWeight: FontWeight.w700),
 //                          ),
-                          new SizedBox(
-                            height: 100.0,
-                          ),
+                        new SizedBox(
+                          height: 100.0,
+                        ),
 //                          new SizedBox(
 //                            height: 50.0,
 //                            child: new ListView.builder(
@@ -250,35 +255,34 @@ class _ItemDetailsState extends State<ItemDetails> {
 //                          new SizedBox(
 //                            height: 10.0,
 //                          ),
-                          new Text(
-                            "Amount",
-                            style: new TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w700),
-                          ),
-                          new SizedBox(
-                            height: 10.0,
-                          ),
-                          new Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              new CircleAvatar(
-                                child: new Icon(Icons.remove),
-                              ),
-                              new Text("0"),
-                              new CircleAvatar(
-                                child: new Icon(Icons.add),
-                              ),
-                            ],
-                          ),
-                          new SizedBox(
-                            height: 50.0,
-                          ),
-                        ],
-                      ),
+                        new Text(
+                          "Amount",
+                          style: new TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w700),
+                        ),
+                        new SizedBox(
+                          height: 10.0,
+                        ),
+                        new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            new CircleAvatar(
+                              child: new Icon(Icons.remove),
+                            ),
+                            new Text("0"),
+                            new CircleAvatar(
+                              child: new Icon(Icons.add),
+                            ),
+                          ],
+                        ),
+                        new SizedBox(
+                          height: 50.0,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           )
         ],

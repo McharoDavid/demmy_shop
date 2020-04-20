@@ -1,8 +1,12 @@
 
+import 'dart:io';
+
 import 'package:demmyshop/tools/app_data.dart';
 import 'package:demmyshop/tools/app_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import 'app_data.dart';
 import 'app_tools.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +15,11 @@ class FirebaseMethods implements AppMethods{
   Firestore firestore = Firestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  DocumentReference documentRef;
+
 
   @override
-  Future<String> LoginUser({String email, String password}) async{
+  Future<String> loginUser({String email, String password}) async{
     // TODO: implement LoginUser
     FirebaseUser user;
 
@@ -117,4 +123,54 @@ class FirebaseMethods implements AppMethods{
     return await firestore.collection(usersData).document(userID).get();
   }
 
+  @override
+  Future<String> addNewProduct({Map newProduct}) async{
+    String documentIDD;
+
+    await firestore.collection(appProducts).add(newProduct).then((documentRef){
+      documentIDD = documentRef.documentID;
+    });
+
+
+    return documentIDD;
+  }
+
+  @override
+  Future<List<String>> uploadProductImages({List<File> imageList, String docID}) async{
+    // TODO: implement uploadProductImages
+    List<String> imagesUrl = new List();
+
+
+    try{
+      for(int s = 0; s < imageList.length; s++){
+        StorageReference storageReference = FirebaseStorage.instance.ref()
+            .child(appProducts).child(docID).child(docID + "$s.jpg");
+
+        StorageUploadTask uploadTask = (storageReference.putFile(imageList[s]));
+        //var storageTaskSnapshot = await uploadTask.onComplete;
+        //Uri downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+        //var downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+        var downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+
+        imagesUrl.add(downloadUrl.toString());
+      }
+
+    } on PlatformException catch (e){
+      imagesUrl.add(error);
+      print(imagesUrl);
+      print(e.message);
+    }
+    return imagesUrl;
+  }
+
+  @override
+  Future<bool> updateProductImages({String docID, List<String> data}) async{
+    // TODO: implement updateProductImages
+    bool msg;
+    await firestore.collection(appProducts).document(docID)
+      .updateData({productImages: data}).whenComplete((){
+        msg = true;
+    });
+    return msg;
+  }
 }
