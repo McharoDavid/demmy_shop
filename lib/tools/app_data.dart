@@ -2,6 +2,7 @@
 //Databases
 const String usersData = "usersData";
 const String appProducts = "appProducts";
+const String adminData = "adminData";
 
 
 //Database Collections
@@ -16,6 +17,14 @@ const String userEmail = "userEmail";
 const String userPassword = "userPassword";
 const String photoUrl = "photoUrl";
 const String loggedIn = "loggedIn";
+
+//admin Details
+const String adminID = "adminID";
+const String adminFullName = "adminFullName";
+const String adminPhone = "adminPhone";
+const String adminEmail = "adminEmail";
+const String adminPassword = "adminPassword";
+
 
 //product details
 const String productTitle = "productTitle";

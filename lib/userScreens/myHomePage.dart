@@ -1,6 +1,7 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demmyshop/adminScreens/adminLogin.dart';
 import 'package:demmyshop/adminScreens/admin_home.dart';
 import 'package:demmyshop/tools/app_data.dart';
 import 'package:demmyshop/tools/app_methods.dart';
@@ -31,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String accountName = "";
   String accountEmail = "";
   String accountPhotoUrl = "";
-  bool isLoggedIn;
+  bool isLoggedIn = false;
   AppMethods appMethods = new FirebaseMethods();
   Firestore firestore = Firestore.instance;
 
@@ -43,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
+    getCurrentAdmin();
   }
 
   Future getCurrentUser() async{
@@ -62,6 +64,22 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  Future getCurrentAdmin() async{
+//    clearDataLocally();
+    accountName = await getStringDataLocally(key: adminFullName);
+    accountEmail = await getStringDataLocally(key: adminEmail);
+
+    isLoggedIn = await getBoolDataLocally(key: loggedIn);
+
+    accountName == null ? accountName = "Guest User" : accountName;
+    accountEmail == null ? accountEmail = "No Email" : accountEmail;
+
+    //print(accountName);
+
+    //print(accountEmail);
+
+    setState(() {});
+  }
   @override
   Widget build(BuildContext context) {
     this.context = context;
@@ -246,6 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bool response = await Navigator.of(context).
       push(new CupertinoPageRoute(builder: (BuildContext context) => new Login()));
       if(response == true) getCurrentUser();
+      if (response == false) getCurrentAdmin();
       return;
     }
     bool response = await appMethods.LogoutUser();
@@ -254,7 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   openAdmin() {
     Navigator.of(context).
-    push(new MaterialPageRoute(builder: (BuildContext context) => new AdminHome()));
+    push(new MaterialPageRoute(builder: (BuildContext context) => new AdminLogin()));
   }
 
   Widget noDataFound(){

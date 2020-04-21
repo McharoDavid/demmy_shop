@@ -6,6 +6,7 @@ import 'package:demmyshop/tools/app_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 import 'app_data.dart';
 import 'app_tools.dart';
@@ -17,23 +18,17 @@ class FirebaseMethods implements AppMethods{
 
   DocumentReference documentRef;
 
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
+
 
   @override
-  Future<String> loginUser({String email, String password}) async{
+  Future<String> loginUser({FirebaseUser user2}) async{
     // TODO: implement LoginUser
-    FirebaseUser user;
 
     try{
-//      user = await auth.signInWithEmailAndPassword(
-//          email: email,
-//          password: password);
-
-      user = (await FirebaseAuth.instance.
-      signInWithEmailAndPassword(email: email, password: password))
-          .user;
-
-      if(user != null){
-        DocumentSnapshot userInfo = await getUserInfo(user.uid);
+        DocumentSnapshot userInfo = await getUserInfo(user2.uid);
         await writeDataLocally(key: userID, value: userInfo[userID]);
         await writeDataLocally(
             key: accountFullName, value: userInfo[accountFullName]);
@@ -43,13 +38,16 @@ class FirebaseMethods implements AppMethods{
         await writeBoolDataLocally(key: loggedIn, value: true);
 
         print(userInfo[userEmail]);
-      }
+
+        return successfulMSG();
+
     }on PlatformException catch (e){
-      //print(e.details);
-      return errorMSG(e.message);
+      print(e.message);
+      showSnackBar(e.message, scaffoldKey);
+      return errorMSG("Error");
     }
 
-    return user == null ? errorMSG("Error: user is null") : successfulMSG();
+
 
   }
 
@@ -147,9 +145,7 @@ class FirebaseMethods implements AppMethods{
             .child(appProducts).child(docID).child(docID + "$s.jpg");
 
         StorageUploadTask uploadTask = (storageReference.putFile(imageList[s]));
-        //var storageTaskSnapshot = await uploadTask.onComplete;
-        //Uri downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
-        //var downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+
         var downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
 
         imagesUrl.add(downloadUrl.toString());
@@ -172,5 +168,58 @@ class FirebaseMethods implements AppMethods{
         msg = true;
     });
     return msg;
+  }
+
+  @override
+  Future<String> adminLogin({FirebaseUser admin2}) async{
+    // TODO: implement AdminLoginUser
+
+    try{
+      // ignore: unrelated_type_equality_checks
+      DocumentSnapshot adminInfo = await getAdminInfo(admin2.uid);
+      //await writeDataLocally(key: adminID, value: adminInfo[admin.uid]);
+      await writeDataLocally(
+          key: adminFullName, value: adminInfo[adminFullName]);
+      await writeDataLocally(key: adminEmail, value: adminInfo[adminEmail]);
+      await writeDataLocally(key: adminPhone, value: adminInfo[adminPhone]);
+//      await writeDataLocally(key: photoUrl, value: adminInfo[photoUrl]);
+      await writeBoolDataLocally(key: loggedIn, value: true);
+
+      print(adminInfo[adminEmail]);
+
+      return successfulMSG();
+
+    }on PlatformException catch (e){
+      print(e.message);
+      showSnackBar(e.message, scaffoldKey);
+      return errorMSG("Error");
+    }
+
+
+  }
+
+  @override
+  Future<DocumentSnapshot> getAdminInfo(String adminIDD) async{
+    // TODO: implement getAdminInfo
+    return await firestore.collection(adminData).document(adminIDD).get();
+  }
+
+  @override
+  Future<bool> checkAdminExists(String adminIDDD) async{
+    // TODO: implement checkAdminExists
+    bool exists = false;
+    try {
+      await firestore.collection(adminData).document(adminIDDD).get().then((doc) {
+        if (doc.exists){
+          exists = true;
+        }else{
+          exists = false;
+        }
+      });
+      return exists;
+    } catch (e) {
+      print(e.details);
+      return false;
+    }
   }
 }
