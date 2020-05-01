@@ -1,5 +1,7 @@
 
+import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:demmyshop/tools/app_data.dart';
 import 'package:demmyshop/tools/app_methods.dart';
@@ -7,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import 'app_data.dart';
 import 'app_tools.dart';
@@ -207,19 +210,147 @@ class FirebaseMethods implements AppMethods{
   @override
   Future<bool> checkAdminExists(String adminIDDD) async{
     // TODO: implement checkAdminExists
-    bool exists = false;
+    bool exists1 = false;
     try {
       await firestore.collection(adminData).document(adminIDDD).get().then((doc) {
         if (doc.exists){
-          exists = true;
+          exists1 = true;
         }else{
-          exists = false;
+          exists1 = false;
         }
       });
-      return exists;
+      return exists1;
     } catch (e) {
-      print(e.details);
+      print(e.message);
       return false;
     }
   }
+
+  @override
+  Future<String> sendMessageToAdmin({String message}) async{
+    // TODO: implement sendMessage
+
+    //var rng = new Random();
+    //var randomNumber = rng.nextInt(100);
+
+    if (await FirebaseAuth.instance.currentUser() == null) {
+
+      return errorMSG("Please Login First before sending message");
+
+    } else {
+      String userEmail1 = await getStringDataLocally(key: userEmail);
+      String AdminEmail1 = "rhoda@gmail.com";
+
+      var uuid = new Uuid();
+      String mID = uuid.v4().toString();
+
+      var timeStamp1 = new DateTime.now();
+      String timeStamp2 = timeStamp1.toString();
+
+      String firstMessage1;
+
+      Stream<QuerySnapshot> snapshot;
+
+      try{
+
+        if (mID != null){
+
+          await firestore.collection(messageData).where('sender', isEqualTo: "user").where('UserEmail', isEqualTo: userEmail1).getDocuments().then((value){
+            if(value.documents.isEmpty){
+              firstMessage1 = "yes";
+            }else{
+              firstMessage1 = "no";
+            }
+          });
+
+
+          await firestore.collection(messageData).document(mID).setData({
+            messageID : mID,
+            UserEmail: userEmail1,
+            AdminEmail: AdminEmail1,
+            messageContent : message,
+            timeStamp: timeStamp2,
+            sender: "user",
+            receiver: "admin",
+            firstMessage: firstMessage1
+          });
+
+        }
+      }on PlatformException catch (e){
+        //print(e.details);
+        return errorMSG(e.message);
+      }
+
+      return mID == null ? errorMSG("Error: messageID is null") : successfulMSG();
+
+    }
+
+  }
+
+  @override
+  Future<String> sendMessageToUser({String message, String userEmail00}) async{
+    // TODO: implement sendMessageToUser
+    String userEmail1 = userEmail00;
+    String AdminEmail1  = await getStringDataLocally(key: adminEmail);
+
+
+    var uuid = new Uuid();
+    String mID = uuid.v4().toString();
+
+    var timeStamp1 = new DateTime.now();
+    String timeStamp2 = timeStamp1.toString();
+
+    String firstMessage1;
+
+
+    try{
+
+      if (mID != null){
+
+        await firestore.collection(messageData).where('sender', isEqualTo: "admin").where('AdminEmail', isEqualTo: AdminEmail1).getDocuments().then((value){
+          if(value.documents.isEmpty){
+            firstMessage1 = "yes";
+          }else{
+            firstMessage1 = "no";
+          }
+        });
+
+
+        await firestore.collection(messageData).document(mID).setData({
+          messageID : mID,
+          UserEmail: userEmail1,
+          AdminEmail: AdminEmail1,
+          messageContent : message,
+          timeStamp: timeStamp2,
+          sender: "admin",
+          receiver: "user",
+          firstMessage: firstMessage1
+        });
+
+      }
+    }on PlatformException catch (e){
+      print(e.message);
+      return errorMSG(e.message);
+    }
+
+    return mID == null ? errorMSG("Error: messageID is null") : successfulMSG();
+
+  }
+
+//  @override
+//  Future<String> deleteMessage({DocumentSnapshot doc}) async{
+//    // TODO: implement deleteMessage
+//    try{
+//      await Firestore.instance.runTransaction((Transaction myTransaction) async {
+//        await myTransaction.delete(doc.reference).whenComplete((){
+//          return successfulMSG();
+//        });
+//      });
+//    }
+//    on PlatformException catch (e){
+//      print(e.message);
+//      showSnackBar(e.message, scaffoldKey);
+//      return errorMSG("Error");
+//    }
+//  }
 }

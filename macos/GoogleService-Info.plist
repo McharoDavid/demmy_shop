@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>942155013939-e3iade5io8mlr5npoeg18f7kq2npl6gt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.942155013939-e3iade5io8mlr5npoeg18f7kq2npl6gt</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>942155013939-521inpipken2r7eh4fmpf1bk7l3vhv45.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDdk-04v64-v33YOVY52cRXYyfv3YTZK0c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>942155013939</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.demmyshop</string>
+	<key>PROJECT_ID</key>
+	<string>foreignsnacks-dcc45</string>
+	<key>STORAGE_BUCKET</key>
+	<string>foreignsnacks-dcc45.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:942155013939:ios:c262654c8802c750526846</string>
+	<key>DATABASE_URL</key>
+	<string>https://foreignsnacks-dcc45.firebaseio.com</string>
+</dict>
+</plist>

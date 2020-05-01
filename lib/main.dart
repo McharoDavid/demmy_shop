@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:demmyshop/userScreens/myHomePage.dart';
 import 'package:flutter/cupertino.dart';
+//import 'package:firebase/firebase.dart' as fb;
 import 'package:flutter/material.dart';
 
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: SplashScreen(), //MyHomePage()
+      home: MyHomePage(), //MyHomePage()
     );
   }
 }

@@ -3,6 +3,7 @@
 const String usersData = "usersData";
 const String appProducts = "appProducts";
 const String adminData = "adminData";
+const String messageData = "messageData";
 
 
 //Database Collections
@@ -32,6 +33,17 @@ const String productPrice = "productPrice";
 const String productDesc = "productDesc";
 const String productCategory = "productCategory";
 const String productImages = "productImages";
+
+//Message details
+const String messageID = "messageID";
+const String UserEmail = "UserEmail";
+const String AdminEmail = "adminEmail";
+const String messageContent = "messageContent";
+const String timeStamp = "timeStamp";
+const String sender = "sender";
+const String receiver = "receiver";
+const String firstMessage = "firstMessage";
+
 
 
 

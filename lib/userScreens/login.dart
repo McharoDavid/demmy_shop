@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
               sidePadding: 18.0,
               textHint: "Email Address",
               textIcon: Icons.email,
-              controller: email
+              controller: email,
             ),
             new SizedBox(height: 30.0,),
             appTextField(

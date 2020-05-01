@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demmyshop/adminScreens/add_products.dart';
 import 'package:demmyshop/adminScreens/admin_messages.dart';
 import 'package:demmyshop/adminScreens/admin_products.dart';
@@ -6,6 +7,10 @@ import 'package:demmyshop/adminScreens/profile_settings.dart';
 import 'package:demmyshop/adminScreens/search_screen.dart';
 import 'package:demmyshop/adminScreens/user_orders.dart';
 import 'package:demmyshop/adminScreens/users.dart';
+import 'package:demmyshop/tools/app_data.dart';
+import 'package:demmyshop/tools/app_methods.dart';
+import 'package:demmyshop/tools/app_tools.dart';
+import 'package:demmyshop/tools/firebase_methods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +20,43 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+
   Size screenSize;
+
+  BuildContext context;
+  String accountName = "";
+  String accountEmail = "";
+  String accountPhotoUrl = "";
+  bool isLoggedIn = false;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  AppMethods appMethods = new FirebaseMethods();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentAdmin();
+
+  }
+
+  Future getCurrentAdmin() async{
+//    clearDataLocally();
+    accountName = await getStringDataLocally(key: adminFullName);
+    accountEmail = await getStringDataLocally(key: adminEmail);
+
+    isLoggedIn = await getBoolDataLocally(key: loggedIn);
+
+    accountName == null ? accountName = "Guest Admin" : accountName;
+    accountEmail == null ? accountEmail = "No Email" : accountEmail;
+
+    //print(accountName);
+
+    //print(accountEmail);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     screenSize = MediaQuery.of(context).size;
@@ -91,7 +132,7 @@ class _AdminHomeState extends State<AdminHome> {
                 ),
                 new GestureDetector(
                   onTap: (){
-                    Navigator.of(context).push(new CupertinoPageRoute(builder: (context)=> AdminMessages()));
+                    Navigator.of(context).push(new CupertinoPageRoute(builder: (context)=> AdminMessages(accountEmail4: accountEmail,)));
                   },
                   child: new CircleAvatar(
                     maxRadius: 72.0,

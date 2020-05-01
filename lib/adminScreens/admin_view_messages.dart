@@ -1,52 +1,36 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demmyshop/tools/app_data.dart';
 import 'package:demmyshop/tools/app_methods.dart';
 import 'package:demmyshop/tools/app_tools.dart';
 import 'package:demmyshop/tools/firebase_methods.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class UserMessages extends StatefulWidget {
-  final String accountEmail3;
-  UserMessages({this.accountEmail3});
+class AdminViewMessages extends StatefulWidget {
+
+  final DocumentSnapshot document;
+  AdminViewMessages(this.document);
 
   @override
-  _UserMessagesState createState() => _UserMessagesState();
+  _AdminViewMessagesState createState() => _AdminViewMessagesState();
 }
 
+class _AdminViewMessagesState extends State<AdminViewMessages> {
 
-
-class _UserMessagesState extends State<UserMessages> {
-
-
-  TextEditingController messageAdminController = new TextEditingController();
+  TextEditingController messageUserController = new TextEditingController();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   AppMethods appMethods = new FirebaseMethods();
   Firestore firestore = Firestore.instance;
-  Size screenSize;
-
-
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
 
 
   @override
   Widget build(BuildContext context) {
-    screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text("Messages To Admin"),
+        title: Text(widget.document[UserEmail]),
       ),
       body: StreamBuilder(
-          stream: firestore.collection(messageData).where('UserEmail', isEqualTo: widget.accountEmail3.toLowerCase()).orderBy("timeStamp").snapshots(),
+          stream: firestore.collection(messageData).where('UserEmail', isEqualTo: widget.document[UserEmail].toLowerCase()).orderBy("timeStamp").snapshots(),
           builder: (context,  snapshot){
             if (!snapshot.hasData) {
               return Center(child: Text("No messages for now..."));
@@ -69,40 +53,32 @@ class _UserMessagesState extends State<UserMessages> {
             height1: 50,
             width1: 247,
             maxLinezz: 4,
-            controller: messageAdminController,
+            controller: messageUserController,
           ),
           appButton(
               btnTxt: "Send",
-              onBtnClicked: sendMessage,
+              onBtnClicked: sendMessageToUser1,
               btnPadding: 20.0,
               btnColor: Theme.of(context).primaryColor
           ),
         ],
       ),
-
     );
   }
 
-
-
-
-//  void openSendMessage() {
-//    Navigator.of(context).
-//    push(new MaterialPageRoute(builder: (BuildContext context) => new MessageAdmin()));
-//  }
-
-
-
-  void sendMessage() async{
-    if(messageAdminController.text == ""){
+  void sendMessageToUser1() async{
+    if(messageUserController.text == ""){
       showSnackBar("Please Type In A Message", scaffoldKey);
       return;
     }
 
     displayProgressDialog(context);
 
-    String response = await appMethods.sendMessageToAdmin(
-        message: messageAdminController.text
+    String userEmail0 = widget.document[UserEmail];
+
+    String response = await appMethods.sendMessageToUser(
+        message: messageUserController.text,
+      userEmail00: userEmail0
     );
 
     if(response == successful){
@@ -118,13 +94,12 @@ class _UserMessagesState extends State<UserMessages> {
   }
 
   void resetMessage1() {
-    messageAdminController.text = "";
+    messageUserController.text = "";
 
     setState(() {
 
     });
   }
-
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
 
@@ -137,7 +112,7 @@ class _UserMessagesState extends State<UserMessages> {
     if(adminIsSender == true){
       return ListTile(
         title: Align(
-            alignment: Alignment.topLeft ,
+            alignment: Alignment.topRight ,
             child: Container(
                 margin: const EdgeInsets.only(left:15.0, right: 15.0, top: 15.0, bottom: 5.0),
                 padding: const EdgeInsets.all(3.0),
@@ -156,7 +131,7 @@ class _UserMessagesState extends State<UserMessages> {
         ),
 
         subtitle: Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.centerRight,
             child: new Text(
               "Admin",
               style: new TextStyle(
@@ -169,7 +144,7 @@ class _UserMessagesState extends State<UserMessages> {
     }else{
       return ListTile(
         title: Align(
-            alignment: Alignment.topRight ,
+            alignment: Alignment.topLeft ,
             child: Container(
                 margin: const EdgeInsets.only(left:15.0, right: 15.0, top: 15.0, bottom: 5.0),
                 padding: const EdgeInsets.all(3.0),
@@ -180,7 +155,7 @@ class _UserMessagesState extends State<UserMessages> {
                 child: new Text(
                   "${document[messageContent]}",
                   style: new TextStyle(
-                      color: Colors.white,
+                    color: Colors.white,
                     fontSize: 18.0,
                   ),
                 )
@@ -188,36 +163,17 @@ class _UserMessagesState extends State<UserMessages> {
         ),
 
         subtitle: Align(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.centerLeft,
             child: new Text(
               "${document[UserEmail]}",
-                style: new TextStyle(
-                  color: Colors.black,
-                  fontSize: 12.0,
-                ),
+              style: new TextStyle(
+                color: Colors.black,
+                fontSize: 12.0,
+              ),
             )
         ),
       );
     }
 
   }
-
-//  deleteMessage(DocumentSnapshot doc1) async{
-//
-//    displayProgressDialog(context);
-//
-//    String response1 = await appMethods.deleteMessage(doc: doc1);
-//    if(response1 == successful){
-//      closeProgressDialog(context);
-////      Navigator.of(context).pop();
-//      showSnackBar("Message Deleted Successfully", scaffoldKey);
-//
-//    }else{
-//      closeProgressDialog(context);
-//      showSnackBar(response1, scaffoldKey);
-//    }
-//  }
-
-
-
 }

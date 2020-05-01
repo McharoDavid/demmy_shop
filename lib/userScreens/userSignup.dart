@@ -86,17 +86,6 @@ class _UserSignUpState extends State<UserSignUp> {
                 btnPadding: 20.0,
                 btnColor: Theme.of(context).primaryColor
             ),
-            new GestureDetector(
-              onTap: (){
-                Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context)=> new Login()));
-              },
-              child: new Text(
-                "Already Registered? Login here",
-                style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline ),
-
-              ),
-            )
           ],
         ),
       ),

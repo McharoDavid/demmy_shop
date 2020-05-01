@@ -198,6 +198,7 @@ class _AddProductsState extends State<AddProducts> {
       return;
     }
 
+
     //update the information after uploading image file to the storage
     bool result = await appMethods.updateProductImages(docID: productID, data: imagesUrl);
 

@@ -10,6 +10,7 @@ import 'package:demmyshop/tools/firebase_methods.dart';
 import 'package:demmyshop/tools/store.dart';
 import 'package:demmyshop/userScreens/profileSettings.dart';
 import 'package:demmyshop/userScreens/useraddress.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,8 +34,12 @@ class _MyHomePageState extends State<MyHomePage> {
   String accountEmail = "";
   String accountPhotoUrl = "";
   bool isLoggedIn = false;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   AppMethods appMethods = new FirebaseMethods();
   Firestore firestore = Firestore.instance;
+
+  String message12;
+
 
   //Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
 
@@ -44,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
-    getCurrentAdmin();
+    //getCurrentAdmin();
   }
 
   Future getCurrentUser() async{
@@ -71,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     isLoggedIn = await getBoolDataLocally(key: loggedIn);
 
-    accountName == null ? accountName = "Guest User" : accountName;
+    accountName == null ? accountName = "Guest Admin" : accountName;
     accountEmail == null ? accountEmail = "No Email" : accountEmail;
 
     //print(accountName);
@@ -84,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     this.context = context;
     return Scaffold(
+      key: scaffoldKey,
       appBar: new AppBar(
         title: GestureDetector(
           onLongPress: openAdmin,
@@ -104,8 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               new IconButton(icon: new Icon(Icons.chat, color: Colors.white,),
                   onPressed: (){
-                    Navigator.of(context).
-                    push(new CupertinoPageRoute(builder: (BuildContext context) => new UserMessages()));
+                    isUserLoggedIn();
                   }),
               new CircleAvatar(
                 radius: 9.5,
@@ -271,9 +276,17 @@ class _MyHomePageState extends State<MyHomePage> {
     if(response == true) getCurrentUser();
   }
 
-  openAdmin() {
-    Navigator.of(context).
-    push(new MaterialPageRoute(builder: (BuildContext context) => new AdminLogin()));
+  openAdmin() async{
+    if(await FirebaseAuth.instance.currentUser() != null){
+    //showSnackBar("Please Login to see your messages", scaffoldKey);
+    message12 = "Please Logout first. For Admin use only.";
+    showSnackBar(message12, scaffoldKey);
+
+    }else{
+      Navigator.of(context).
+      push(new MaterialPageRoute(builder: (BuildContext context) => new AdminLogin()));
+    }
+
   }
 
   Widget noDataFound(){
@@ -407,5 +420,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+  void isUserLoggedIn() async{
+    if(await FirebaseAuth.instance.currentUser() == null){
+      //showSnackBar("Please Login to see your messages", scaffoldKey);
+      message12 = "Please Login to see your messages";
+      showSnackBar(message12, scaffoldKey);
+
+    }else{
+      Navigator.of(context).push(new MaterialPageRoute(
+          builder: (context)=> new UserMessages(accountEmail3: accountEmail)));
+    }
   }
 }

@@ -14,6 +14,10 @@ abstract class AppMethods{
         String password
       });
 
+  Future<String> sendMessageToAdmin({String message});
+
+  //Future<String> deleteMessage({DocumentSnapshot doc});
+
   Future<bool> LogoutUser();
   Future<DocumentSnapshot> getUserInfo(String userID);
   Future<DocumentSnapshot> getAdminInfo(String adminIDD);
@@ -24,4 +28,6 @@ abstract class AppMethods{
     List<String> data,
   });
   Future<bool> checkAdminExists(String adminIDDD);
+
+  Future<String> sendMessageToUser({String message, String userEmail00}) {}
 }
