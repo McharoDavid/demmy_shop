@@ -1,3 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demmyshop/tools/app_data.dart';
+import 'package:demmyshop/tools/app_methods.dart';
+import 'package:demmyshop/tools/app_tools.dart';
+import 'package:demmyshop/tools/firebase_methods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,10 +17,12 @@ class ItemDetails extends StatefulWidget {
   double itemRating;
   String itemDescription;
   String itemCategory;
+  String itemId;
   List itemImages;
 
   ItemDetails({
     this.itemName,
+    this.itemId,
     this.itemPrice,
     this.itemImage,
     this.itemRating,
@@ -27,10 +35,19 @@ class ItemDetails extends StatefulWidget {
 }
 
 class _ItemDetailsState extends State<ItemDetails> {
+
+  Firestore firestore = Firestore.instance;
+  int numberOfItemsInCart = 0;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  AppMethods appMethods = new FirebaseMethods();
+
+  int _n = 0;
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       appBar: new AppBar(
         title: new Text("Snack Details"),
         centerTitle: false,
@@ -203,58 +220,10 @@ class _ItemDetailsState extends State<ItemDetails> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         new SizedBox(
-                          height: 10.0,
+                          height: 35.0,
                         ),
-//                          new Text(
-//                            "Colors",
-//                            style: new TextStyle(
-//                                fontSize: 18.0, fontWeight: FontWeight.w700),
-//                          ),
-                        new SizedBox(
-                          height: 100.0,
-                        ),
-//                          new SizedBox(
-//                            height: 50.0,
-//                            child: new ListView.builder(
-//                                scrollDirection: Axis.horizontal,
-//                                itemCount: 4,
-//                                itemBuilder: (context, index) {
-//                                  return Padding(
-//                                    padding: const EdgeInsets.all(4.0),
-//                                    child: new ChoiceChip(
-//                                        label: new Text("Color ${index}"),
-//                                        selected: false),
-//                                  );
-//                                }),
-//                          ),
-//                          new SizedBox(
-//                            height: 10.0,
-//                          ),
-//                          new Text(
-//                            "Sizes",
-//                            style: new TextStyle(
-//                                fontSize: 18.0, fontWeight: FontWeight.w700),
-//                          ),
-//                          new SizedBox(
-//                            height: 10.0,
-//                          ),
-//                          new SizedBox(
-//                            height: 50.0,
-//                            child: new ListView.builder(
-//                                scrollDirection: Axis.horizontal,
-//                                itemCount: 4,
-//                                itemBuilder: (context, index) {
-//                                  return Padding(
-//                                    padding: const EdgeInsets.all(4.0),
-//                                    child: new ChoiceChip(
-//                                        label: new Text("Size ${index}"),
-//                                        selected: false),
-//                                  );
-//                                }),
-//                          ),
-//                          new SizedBox(
-//                            height: 10.0,
-//                          ),
+
+
                         new Text(
                           "Amount",
                           style: new TextStyle(
@@ -266,17 +235,22 @@ class _ItemDetailsState extends State<ItemDetails> {
                         new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            new CircleAvatar(
-                              child: new Icon(Icons.remove),
-                            ),
-                            new Text("0"),
-                            new CircleAvatar(
-                              child: new Icon(Icons.add),
-                            ),
+                            new FloatingActionButton(
+                              onPressed: minus,
+                              heroTag: "floatingbtn1",
+                              child: new Icon(Icons.remove, color: Colors.black,),
+                              backgroundColor: Colors.white,),
+
+                            new Text('$_n',
+                                style: new TextStyle(fontSize: 30.0)),
+
+
+                            new FloatingActionButton(
+                              heroTag: "floatingbtn2",
+                              onPressed: add,
+                              child: new Icon(Icons.add, color: Colors.black,),
+                              backgroundColor: Colors.white,),
                           ],
-                        ),
-                        new SizedBox(
-                          height: 50.0,
                         ),
                       ],
                     ),
@@ -291,14 +265,13 @@ class _ItemDetailsState extends State<ItemDetails> {
           alignment: Alignment.topLeft,
           children: <Widget>[
             new FloatingActionButton(onPressed: (){
-              Navigator.of(context).
-              push(new CupertinoPageRoute(builder: (BuildContext context) => new UserCart()));
+              checkCart();
             },
                 child: new Icon(Icons.shopping_cart)),
             new CircleAvatar(
               radius: 9.5,
               backgroundColor: Colors.red,
-              child: new Text("0", style: new TextStyle(color: Colors.white, fontSize: 13.0),),
+              child: countItemsInCart1(),
             )
           ],
         ),
@@ -326,11 +299,14 @@ class _ItemDetailsState extends State<ItemDetails> {
               ),
               new Container(
                 width: (screenSize.width - 20) / 2,
-                child: new Text(
-                  "ORDER NOW",
-                  textAlign: TextAlign.center,
-                  style: new TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w700
+                child: GestureDetector(
+                  onTap: addToCart,
+                  child: new Text(
+                    "ADD TO CART",
+                    textAlign: TextAlign.center,
+                    style: new TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700
+                    ),
                   ),
                 ),
               )
@@ -339,5 +315,123 @@ class _ItemDetailsState extends State<ItemDetails> {
         ),
       ),
     );
+  }
+
+  void minus() {
+    setState(() {
+      if (_n != 0)
+        _n--;
+    });
+  }
+
+  void add() {
+    setState(() {
+      _n++;
+    });
+  }
+
+
+  void addToCart() async{
+    //cartid, customerEmail, productid, productName, productCategory, productDesc,
+    //productPrice, amount, totalPrice
+
+    if (_n == 0) {
+      showSnackBar("Amount cannot be zero", scaffoldKey);
+      return;
+    }
+
+    if (await FirebaseAuth.instance.currentUser() == null) {
+
+      showSnackBar("Please Login first to add to cart", scaffoldKey);
+      return;
+
+    }else{
+      print(widget.itemId);
+      //show the progress Dialog
+      displayProgressDialog(context);
+
+      String userEmail2 = await getStringDataLocally(key: userEmail);
+
+      //String customerEmail, String productId, String productName,
+    //String productCategory, String productDesc, String productPrice, int amount
+
+      String response = await appMethods.addToCart(
+          customerEmail1: userEmail2,
+        productId1: widget.itemId,
+        productName1: widget.itemName,
+        productCategory1: widget.itemCategory,
+        productDesc1: widget.itemDescription,
+        productPrice1: widget.itemPrice,
+        amount1: _n
+      );
+
+      if(response == successful){
+        closeProgressDialog(context);
+        //Navigator.of(context).pop();
+        resetAmount();
+        showSnackBar("Product Added To Cart Successfully", scaffoldKey);
+
+      }else{
+        closeProgressDialog(context);
+        showSnackBar(response, scaffoldKey);
+      }
+    }
+  }
+
+  void resetAmount() {
+    _n = 0;
+    setState(() {
+
+    });
+  }
+
+  void checkCart() async{
+
+    if (await FirebaseAuth.instance.currentUser() == null) {
+
+    showSnackBar("Please login first to check cart", scaffoldKey);
+    return;
+
+    }else{
+      String userEmail23 = await getStringDataLocally(key: userEmail);
+
+      Navigator.of(context).
+      push(new CupertinoPageRoute(builder: (BuildContext context) => new UserCart(accountEmail22: userEmail23)));
+    }
+
+
+  }
+
+  Widget countItemsInCart1(){
+
+    countFunction();
+
+
+
+    return new Text(
+      "$numberOfItemsInCart",
+      style: new TextStyle(
+          color: Colors.white,
+          fontSize: 13.0
+      ),
+    );
+
+  }
+
+  void countFunction() async{
+    int length1 = await appMethods.countItemsInCart();
+
+
+
+    if(length1 == -1){
+      showSnackBar("Error: error displaying numbers of items in the cart, Check console for the error message", scaffoldKey);
+    }else{
+      numberOfItemsInCart = length1;
+    }
+
+    setState(() {
+
+    });
+
   }
 }

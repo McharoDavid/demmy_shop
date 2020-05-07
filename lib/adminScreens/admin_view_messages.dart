@@ -29,37 +29,48 @@ class _AdminViewMessagesState extends State<AdminViewMessages> {
       appBar: AppBar(
         title: Text(widget.document[UserEmail]),
       ),
-      body: StreamBuilder(
-          stream: firestore.collection(messageData).where('UserEmail', isEqualTo: widget.document[UserEmail].toLowerCase()).orderBy("timeStamp").snapshots(),
-          builder: (context,  snapshot){
-            if (!snapshot.hasData) {
-              return Center(child: Text("No messages for now..."));
-            }else{
-              final int dataCount = snapshot.data.documents.length;
-              return new ListView.builder(
-                itemCount: dataCount,
-                itemBuilder: (context, index) {
-                  return _buildList(context, snapshot.data.documents[index]);
-                },
-              );
-            }
-          }),
-      bottomNavigationBar: new Row(
+      body: Stack(
         children: [
-          messageTextField(
-            sidePadding: 18.0,
-            textHint: "Type Message here...",
-            textIcon: Icons.chat,
-            height1: 50,
-            width1: 247,
-            maxLinezz: 4,
-            controller: messageUserController,
+          Container(
+            child: StreamBuilder(
+                stream: firestore.collection(messageData).where('UserEmail', isEqualTo: widget.document[UserEmail].toLowerCase()).orderBy("timeStamp").snapshots(),
+                builder: (context,  snapshot){
+                  if (!snapshot.hasData) {
+                    return Center(child: Text("No messages for now..."));
+                  }else{
+                    final int dataCount = snapshot.data.documents.length;
+                    return new ListView.builder(
+                      itemCount: dataCount,
+                      itemBuilder: (context, index) {
+                        return _buildList(context, snapshot.data.documents[index]);
+                      },
+                    );
+                  }
+                }),
           ),
-          appButton(
-              btnTxt: "Send",
-              onBtnClicked: sendMessageToUser1,
-              btnPadding: 20.0,
-              btnColor: Theme.of(context).primaryColor
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                messageTextField(
+                  sidePadding: 18.0,
+                  textHint: "Type Message here...",
+                  textIcon: Icons.chat,
+                  height1: null,
+                  width1: 247,
+                  controller: messageUserController,
+                ),
+                appButton(
+                    btnTxt: "Send",
+                    onBtnClicked: sendMessageToUser1,
+                    btnPadding: 20.0,
+                    btnColor: Theme.of(context).primaryColor
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -177,3 +188,6 @@ class _AdminViewMessagesState extends State<AdminViewMessages> {
 
   }
 }
+
+//Work on the view messages. Make the streambuilder to be vertically ontop of the
+//textfiled's row

@@ -4,6 +4,7 @@ const String usersData = "usersData";
 const String appProducts = "appProducts";
 const String adminData = "adminData";
 const String messageData = "messageData";
+const String cartData = "cartData";
 
 
 //Database Collections
@@ -43,6 +44,20 @@ const String timeStamp = "timeStamp";
 const String sender = "sender";
 const String receiver = "receiver";
 const String firstMessage = "firstMessage";
+
+
+//Cart details
+const String cartID = "cartID";
+const String customerEmail = "customerEmail";
+const String productId = "productId";
+const String productName = "productName";
+const String productCat = "productCat";
+const String productDescr = "productDescr";
+const String produPrice = "produPrice";
+const String quantityAmount = "quantityAmount";
+const String totalPrice = "totalPrice";
+const String timeAdded = "timeAdded";
+
 
 
 

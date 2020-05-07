@@ -15,6 +15,7 @@ abstract class AppMethods{
       });
 
   Future<String> sendMessageToAdmin({String message});
+  Future<String> sendMessageToUser({String message, String userEmail00}) {}
 
   //Future<String> deleteMessage({DocumentSnapshot doc});
 
@@ -29,5 +30,7 @@ abstract class AppMethods{
   });
   Future<bool> checkAdminExists(String adminIDDD);
 
-  Future<String> sendMessageToUser({String message, String userEmail00}) {}
+  Future<String> addToCart({String customerEmail1, String productId1, String productName1, String productCategory1, String productDesc1, String productPrice1, int amount1}) {}
+  Future<int> countItemsInCart();
+
 }

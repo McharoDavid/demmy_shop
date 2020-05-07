@@ -110,6 +110,14 @@ class FirebaseMethods implements AppMethods{
     return e;
   }
 
+  Future<int> successInt(int e) async {
+    return e;
+  }
+
+  Future<int> errorInt(int e) async {
+    return e;
+  }
+
   @override
   Future<bool> LogoutUser() async{
     // TODO: implement LogoutUser
@@ -337,20 +345,82 @@ class FirebaseMethods implements AppMethods{
 
   }
 
-//  @override
-//  Future<String> deleteMessage({DocumentSnapshot doc}) async{
-//    // TODO: implement deleteMessage
-//    try{
-//      await Firestore.instance.runTransaction((Transaction myTransaction) async {
-//        await myTransaction.delete(doc.reference).whenComplete((){
-//          return successfulMSG();
-//        });
-//      });
-//    }
-//    on PlatformException catch (e){
-//      print(e.message);
-//      showSnackBar(e.message, scaffoldKey);
-//      return errorMSG("Error");
-//    }
-//  }
+  @override
+  Future<String> addToCart({String customerEmail1, String productId1, String productName1, String productCategory1, String productDesc1, String productPrice1, int amount1}) async{
+    // TODO: implement addToCart
+
+    var uuid = new Uuid();
+    String cID = uuid.v4().toString();
+
+    var timeStamp1 = new DateTime.now();
+    String timeStamp2 = timeStamp1.toString();
+
+    var productPriceDouble = double.parse(productPrice1);
+    assert(productPriceDouble is double);
+
+    double amountQ = amount1.toDouble();
+
+    double totalPrice1 = productPriceDouble * amountQ;
+
+
+    print(totalPrice1);
+
+    try{
+
+      if (cID != null){
+
+        await firestore.collection(cartData).document(cID).setData({
+          cartID : cID,
+          customerEmail: customerEmail1,
+          productId: productId1,
+          productName: productName1,
+          productCat: productCategory1,
+          productDescr: productDesc1,
+          productPrice: productPrice1,
+          quantityAmount: amount1,
+          totalPrice: totalPrice1,
+          timeAdded: timeStamp2
+        });
+
+      }
+    }on PlatformException catch (e){
+      print(e.message);
+      return errorMSG(e.message);
+    }
+
+    return cID == null ? errorMSG("Error: cartID is null") : successfulMSG();
+
+  }
+
+  @override
+  Future<int> countItemsInCart() async{
+    // TODO: implement countItemsInCart
+    int numInCart;
+    try{
+      if (await FirebaseAuth.instance.currentUser() == null) {
+        return errorInt(0);
+      }else{
+
+        String userEmail24 = await getStringDataLocally(key: userEmail);
+        await firestore.collection(cartData).where('customerEmail', isEqualTo: userEmail24.toLowerCase()).orderBy("timeAdded").getDocuments().then((value){
+          if(value.documents.isEmpty){
+            numInCart = 0;
+          }else{
+            int len = value.documents.length;
+            numInCart = len;
+//            print("length of docs is: $len");
+//            print("num in cart is: $numInCart");
+          }
+        });
+      }
+
+    }on PlatformException catch (e){
+      print(e.message);
+      return -1;
+    }
+
+    return successInt(numInCart);
+  }
+
+
 }

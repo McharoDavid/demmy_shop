@@ -50,12 +50,11 @@ Widget messageTextField(
       double sidePadding,
       TextInputType textType,
       TextEditingController controller,
-      int maxLinezz,
       double height1,
       double width1,
     }
     ){
-  height1 == null ? height1 = 50.0 : height1;
+  height1 == null ? height1 = null : height1;
   width1 == null ? width1 = 50.0 : width1;
   sidePadding == null ? sidePadding = 0.0 : sidePadding;
   textHint == null ? textHint = "" : textHint;
@@ -72,7 +71,8 @@ Widget messageTextField(
       ),
       child: new TextField(
           controller: controller,
-          maxLines: maxLinezz == null ? 1 : maxLinezz,
+          maxLines: null,
+          minLines: 1,
           decoration: new InputDecoration(
             border: InputBorder.none,
             hintText: textHint,

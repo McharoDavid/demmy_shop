@@ -38,6 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
   AppMethods appMethods = new FirebaseMethods();
   Firestore firestore = Firestore.instance;
 
+  int numberOfItemsInCart = 0;
+
   String message12;
 
 
@@ -151,14 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
         alignment: Alignment.topLeft,
         children: <Widget>[
           new FloatingActionButton(onPressed: (){
-            Navigator.of(context).
-            push(new CupertinoPageRoute(builder: (BuildContext context) => new UserCart()));
+            checkCart();
           },
               child: new Icon(Icons.shopping_cart)),
           new CircleAvatar(
             radius: 9.5,
             backgroundColor: Colors.red,
-            child: new Text("0", style: new TextStyle(color: Colors.white, fontSize: 13.0),),
+            child: countItemsInCart2(),
           )
         ],
       ),
@@ -333,6 +334,7 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context)=> new ItemDetails(
               itemName: document[productTitle],
               itemPrice: document[productPrice],
+              itemId: document.documentID,
               itemImages: productImage,
               itemImage: productImage[0],
               itemDescription: document[productDesc],
@@ -432,4 +434,50 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context)=> new UserMessages(accountEmail3: accountEmail)));
     }
   }
+
+  void checkCart() async{
+    if (await FirebaseAuth.instance.currentUser() == null) {
+
+    showSnackBar("Please login first to check cart", scaffoldKey);
+    return;
+
+    }else{
+
+    Navigator.of(context).
+    push(new CupertinoPageRoute(builder: (BuildContext context) => new UserCart(accountEmail22: accountEmail)));
+    }
+
+
+  }
+
+  Widget countItemsInCart2() {
+
+    countFunction2();
+
+    return new Text(
+      "$numberOfItemsInCart",
+      style: new TextStyle(
+          color: Colors.white,
+          fontSize: 13.0
+      ),
+    );
+  }
+
+  void countFunction2() async{
+    int length1 = await appMethods.countItemsInCart();
+
+
+
+    if(length1 == -1){
+      showSnackBar("Error: error displaying numbers of items in the cart, Check console for the error message", scaffoldKey);
+    }else{
+      numberOfItemsInCart = length1;
+    }
+
+    setState(() {
+
+    });
+
+  }
+
 }
