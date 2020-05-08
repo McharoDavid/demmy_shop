@@ -181,6 +181,8 @@ class _UserCartState extends State<UserCart> {
   }
 
   void OrderNow() {
+    //we need totalOverrallPrice, customer email, customer name, document
+    //payment method(card or cash on delivery),
     showSnackBar("Under Construction...coming soon.", scaffoldKey);
     return;
   }
